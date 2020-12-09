@@ -195,12 +195,18 @@ export default {
       this.editId = oldData.id
     },
     handleDelete (index, data) {
-      axios.delete(`/api/private/v1/users/1a1${data.id}`).then(res => {
-        console.log('delete')
-        console.log(res)
-        if (res.data.meta.status !== 200) this.$message.error('delete user failed')
-        this.$message.success('delete user success')
-        this.getUserList()
+      this.$confirm('Confirm to delete user : ' + data.username + ' ? ', 'Notice', {
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        axios.delete(`/api/private/v1/users/${data.id}`).then(res => {
+        // if (res.data.meta.status !== 200) return
+          this.$message.success('delete user success')
+          this.getUserList()
+        })
+      }).catch(() => {
+        this.$message.error('Cancel delete ')
       })
     },
     handleAssign (index, data) {
