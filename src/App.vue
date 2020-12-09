@@ -1,9 +1,23 @@
 <template>
   <div id="app">
-    APP根节点
+
     <router-view></router-view>
   </div>
 </template>
 
+<script>
+
+export default {
+  name: 'app'
+}
+
+</script>
+
 <style lang="scss">
+  html,
+  body,
+  #app {
+    padding: 0;
+    margin: 0;
+  }
 </style>

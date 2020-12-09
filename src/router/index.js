@@ -2,6 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../components/Login.vue'
 import Home from '../components/Home.vue'
+import Welcome from '../components/Welcome.vue'
+import Users from '../components/user/Users.vue'
+import Rights from '../components/role/Rights.vue'
+import Roles from '../components/role/Roles.vue'
 
 Vue.use(VueRouter)
 
@@ -13,13 +17,43 @@ const routes = [{
   component: Login
 }, {
   path: '/home',
-  component: Home
+  component: Home,
+  redirect: '/welcome',
+  children: [{
+    path: '/welcome',
+    component: Welcome
+  },
+  {
+    path: '/users',
+    component: Users
+  },
+  {
+    path: '/roles',
+    component: Roles
+  },
+  {
+    path: '/rights',
+    component: Rights
+  }
+  ]
 }]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login') {
+    return next()
+  }
+  const tokenStr = window.sessionStorage.getItem('token')
+  if (!tokenStr) {
+    console.log('lanjie')
+    return next('/login')
+  }
+  next()
 })
 
 export default router
