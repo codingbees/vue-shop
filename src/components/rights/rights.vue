@@ -1,11 +1,19 @@
 <template>
-    <div>
-
-    </div>
+  <div>
+    <Breadcrum></Breadcrum>
+    rights
+  </div>
 </template>
-
 <script>
-export default {
 
+export default {
+  data () {
+    return {
+      aaa: ''
+    }
+  }
 }
 </script>
+<style lang="scss">
+
+</style>

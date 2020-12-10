@@ -24,9 +24,7 @@
                             <i class="el-icon-menu"></i>
                             <span class="home-menu-item">{{item.authName}}</span>
                         </el-menu-item>
-
                     </el-submenu>
-
                 </el-menu>
 
             </el-aside>
@@ -99,10 +97,6 @@ export default {
     .el-aside {
         background-color: #373d41;
 
-    }
-
-    .el-menu {
-        /* border-right: none; */
     }
 
     .toggle-button {
