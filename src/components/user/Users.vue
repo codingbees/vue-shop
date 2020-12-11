@@ -16,20 +16,20 @@
       <el-table :data="userlist" style="width: 100%" stripe border>
         <el-table-column type="index" width="50" label="序号">
         </el-table-column>
-        <el-table-column label="id" prop="id">
+        <el-table-column label="id" prop="id" width="100">
         </el-table-column>
-        <el-table-column label="create_time" prop="create_time">
+        <el-table-column label="create_time" prop="create_time" width="150">
         </el-table-column>
-        <el-table-column label="email" prop="email">
+        <el-table-column label="email" prop="email" width="150">
 
         </el-table-column>
-        <el-table-column label="mobile" prop="mobile">
+        <el-table-column label="mobile" prop="mobile" width="150">
         </el-table-column>
-        <el-table-column label="role_name" prop="role_name">
+        <el-table-column label="role_name" prop="role_name" width="150">
         </el-table-column>
-        <el-table-column label="username" prop="username">
+        <el-table-column label="username" prop="username" width="100">
         </el-table-column>
-        <el-table-column label="switch" prop="mg_state">
+        <el-table-column label="switch" prop="mg_state" width="100">
           <template v-slot="scope">
             <el-switch v-model="scope.row.mg_state" @change="userStateChange(scope.row)">
             </el-switch>
@@ -99,6 +99,24 @@
         <el-button type="primary" @click="editAddUserConfirm">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 分配角色 -->
+    <el-dialog title="分配角色" :visible.sync="assignDialogFormVisible" width="50%" @close="assignDialogClose">
+      <div>
+        <p>用户名称：{{userInFo.username}}</p>
+        <p>用户角色：{{userInFo.role_name}}</p>
+        <p>分配新角色：
+          <el-select v-model="selectRoleId" placeholder="请选择">
+            <el-option v-for="data in rolesList" :key="data.id" :label="data.roleName" :value="data.id">
+            </el-option>
+          </el-select>
+        </p>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="assignDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="assignUserConfirm">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -156,7 +174,12 @@ export default {
       search: '',
       dialogFormVisible: false,
       editDialogFormVisible: false,
-      editId: ''
+      editId: '',
+      assignDialogFormVisible: false,
+      userInFo: {},
+      rolesList: [],
+      selectRoleId: ''
+
     }
   },
   methods: {
@@ -210,8 +233,12 @@ export default {
       })
     },
     handleAssign (index, data) {
-      console.log(index)
-      console.log(data)
+      this.userInFo = data
+      axios.get('/api/private/v1/roles').then(res => {
+        if (res.data.meta.status !== 200) return this.$message.error('获取失败')
+        this.rolesList = res.data.data
+      })
+      this.assignDialogFormVisible = true
     },
     handleSizeChange (e) {
       this.queryInfo.pagesize = e
@@ -263,7 +290,25 @@ export default {
           this.getUserList()
         })
       })
+    },
+    assignDialogClose () {
+      this.selectRoleId = ''
+      this.userInFo = {}
+      this.assignDialogFormVisible = false
+    },
+    assignUserConfirm () {
+      if (!this.selectRoleId) {
+        return this.$message.error('还未选择新角色')
+      }
+      axios.put(`/api/private/v1/users/${this.userInFo.id}/role`, {
+        rid: this.selectRoleId
+      }).then(res => {
+        if (res.data.meta.status !== 200) return this.$message.error('修改用户角色失败')
+        this.getUserList()
+        this.assignDialogFormVisible = false
+      })
     }
+
   }
 }
 
@@ -285,5 +330,9 @@ export default {
   .el-table,
   .el-pagination {
     margin-top: 15px;
+  }
+
+  .el-card {
+    min-width: 1200px;
   }
 </style>
