@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import './assets/style.css'
-
+import treeTable from 'vue-table-with-tree-grid'
 import ElementUI, {
   Message
 } from 'element-ui'
@@ -17,7 +17,7 @@ axios.interceptors.request.use(config => {
 
 Vue.use(ElementUI)
 Vue.prototype.$message = Message
-
+Vue.component('treeTable', treeTable)
 Vue.config.productionTip = false
 new Vue({
   router,
